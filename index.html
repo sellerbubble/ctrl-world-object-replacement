@@ -128,6 +128,12 @@ h2 {
   gap: 14px;
   align-items: start;
 }
+.first-view-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  align-items: start;
+}
 .video-card {
   background: var(--paper);
   border: 1px solid var(--line);
@@ -225,7 +231,7 @@ video {
 .bullet b { display: block; margin-bottom: 6px; }
 @media (max-width: 860px) {
   header { flex-direction: column; }
-  .facts, .video-pair, .material-row, .bullets { grid-template-columns: 1fr; }
+  .facts, .video-pair, .material-row, .first-view-grid, .bullets { grid-template-columns: 1fr; }
   .fact { border-right: 0; border-bottom: 1px solid var(--ink); }
   .fact:last-child { border-bottom: 0; }
 }
@@ -239,6 +245,7 @@ video {
         <a href="#setup">Setup</a>
         <a href="#main">Main video</a>
         <a href="#observations">Observations</a>
+        <a href="#first-view">First-view</a>
         <a href="#appendix">Appendix</a>
       </nav>
     </header>
@@ -333,6 +340,75 @@ video {
         </div>
       </div>
     </section>
+
+    
+    <section id="first-view">
+      <div class="section-title"><div class="dot"></div><h2>First-view rollout comparisons</h2></div>
+      <p class="note">
+        These videos crop each rollout to the first camera view only. Each task compares replay and
+        policy-in-loop side by side, with baseline and the three object edits stacked vertically.
+      </p>
+      <div class="first-view-grid">
+        
+      <section class="video-card primary">
+        <div class="video-head">
+          <h3>Pickplace</h3>
+          <span>H.264 / 4 fps</span>
+        </div>
+        <video controls preload="metadata" playsinline src="first_view_rollout_comparisons_v1/pickplace_first_view_replay_policy.mp4"></video>
+      </section>
+    
+      <section class="video-card">
+        <div class="video-head">
+          <h3>Drawer</h3>
+          <span>H.264 / 4 fps</span>
+        </div>
+        <video controls preload="metadata" playsinline src="first_view_rollout_comparisons_v1/drawer_first_view_replay_policy.mp4"></video>
+      </section>
+    
+      <section class="video-card">
+        <div class="video-head">
+          <h3>Stack</h3>
+          <span>H.264 / 4 fps</span>
+        </div>
+        <video controls preload="metadata" playsinline src="first_view_rollout_comparisons_v1/stack_first_view_replay_policy.mp4"></video>
+      </section>
+    
+      <section class="video-card">
+        <div class="video-head">
+          <h3>Towel fold</h3>
+          <span>H.264 / 4 fps</span>
+        </div>
+        <video controls preload="metadata" playsinline src="first_view_rollout_comparisons_v1/towel_fold_first_view_replay_policy.mp4"></video>
+      </section>
+    
+      <section class="video-card">
+        <div class="video-head">
+          <h3>Wipe table</h3>
+          <span>H.264 / 4 fps</span>
+        </div>
+        <video controls preload="metadata" playsinline src="first_view_rollout_comparisons_v1/wipe_table_first_view_replay_policy.mp4"></video>
+      </section>
+    
+      <section class="video-card">
+        <div class="video-head">
+          <h3>Tissue</h3>
+          <span>H.264 / 4 fps</span>
+        </div>
+        <video controls preload="metadata" playsinline src="first_view_rollout_comparisons_v1/tissue_first_view_replay_policy.mp4"></video>
+      </section>
+    
+      <section class="video-card">
+        <div class="video-head">
+          <h3>Close laptop</h3>
+          <span>H.264 / 4 fps</span>
+        </div>
+        <video controls preload="metadata" playsinline src="first_view_rollout_comparisons_v1/close_laptop_first_view_replay_policy.mp4"></video>
+      </section>
+    
+      </div>
+    </section>
+        
 
     <section id="appendix">
       <div class="section-title"><div class="dot"></div><h2>Additional material</h2></div>
