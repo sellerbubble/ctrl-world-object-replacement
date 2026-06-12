@@ -1,0 +1,554 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>World Model Collapse on Out-of-Distribution Objects</title>
+  <style>
+:root {
+  --bg: #f8f7f1;
+  --paper: #fffefa;
+  --ink: #111111;
+  --muted: #68645c;
+  --line: #d8d3c7;
+  --soft: #ece7dc;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size: 14px;
+  line-height: 1.55;
+}
+.page {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 28px 0 56px;
+}
+header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 24px;
+  border-bottom: 1px solid var(--ink);
+  padding-bottom: 16px;
+  margin-bottom: 48px;
+}
+.brand {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 30px;
+  letter-spacing: 0;
+}
+nav {
+  display: flex;
+  gap: 18px;
+  font-size: 12px;
+}
+nav a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 7px;
+  text-decoration-thickness: 1.5px;
+}
+.hero {
+  width: min(760px, 100%);
+  margin-bottom: 34px;
+}
+.eyebrow {
+  color: var(--muted);
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+h1 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(36px, 7vw, 72px);
+  font-weight: 400;
+  line-height: 0.98;
+  margin: 0 0 24px;
+  letter-spacing: 0;
+}
+.lead {
+  font-size: 16px;
+  max-width: 720px;
+}
+.facts {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border: 1px solid var(--ink);
+  background: var(--paper);
+  box-shadow: 4px 4px 0 var(--ink);
+  margin: 30px 0 52px;
+}
+.fact {
+  padding: 14px;
+  border-right: 1px solid var(--ink);
+}
+.fact:last-child { border-right: 0; }
+.fact b {
+  display: block;
+  font-size: 12px;
+  margin-bottom: 4px;
+}
+.fact span { color: var(--muted); font-size: 12px; }
+.section-title {
+  display: grid;
+  grid-template-columns: 9px 1fr;
+  gap: 18px;
+  align-items: start;
+  margin: 48px 0 18px;
+}
+.dot {
+  width: 7px;
+  height: 7px;
+  background: var(--ink);
+  border-radius: 2px;
+  margin-top: 10px;
+}
+h2 {
+  font-size: 18px;
+  margin: 0;
+  font-weight: 700;
+}
+.note {
+  max-width: 830px;
+  color: var(--muted);
+  margin: 0 0 18px 27px;
+}
+.video-pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  align-items: start;
+}
+.material-row {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.85fr) repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  align-items: start;
+}
+.video-card {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  padding: 12px;
+}
+.video-card.primary {
+  border-color: var(--ink);
+  box-shadow: 4px 4px 0 var(--ink);
+}
+.video-head,
+.figure-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 10px;
+}
+h3 {
+  font-size: 13px;
+  margin: 0;
+}
+.video-head span,
+.figure-head span {
+  color: var(--muted);
+  font-size: 11px;
+  white-space: nowrap;
+}
+video {
+  display: block;
+  width: 100%;
+  background: #000;
+  border: 1px solid #000;
+}
+.figure-card {
+  margin: 22px 0 0 27px;
+  background: var(--paper);
+  border: 1px solid var(--ink);
+  box-shadow: 4px 4px 0 var(--ink);
+  padding: 12px;
+  max-width: 900px;
+}
+.figure-card.compact {
+  margin: 0;
+  max-width: none;
+  border-color: var(--line);
+  box-shadow: none;
+}
+.figure-card img {
+  display: block;
+  width: 100%;
+  border: 1px solid #000;
+  background: #000;
+}
+.figure-card figcaption {
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 10px;
+}
+.timeline {
+  margin-top: 20px;
+  border-left: 1px solid var(--line);
+  padding-left: 24px;
+}
+.task-block {
+  position: relative;
+  margin: 28px 0 42px;
+}
+.task-block::before {
+  content: "";
+  position: absolute;
+  left: -28px;
+  top: 8px;
+  width: 7px;
+  height: 7px;
+  background: var(--ink);
+  border-radius: 2px;
+  outline: 4px solid var(--bg);
+}
+.task-block h3 {
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+.bullets {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 18px 0 28px 27px;
+}
+.bullet {
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.45);
+  padding: 12px;
+  font-size: 12px;
+}
+.bullet b { display: block; margin-bottom: 6px; }
+@media (max-width: 860px) {
+  header { flex-direction: column; }
+  .facts, .video-pair, .material-row, .bullets { grid-template-columns: 1fr; }
+  .fact { border-right: 0; border-bottom: 1px solid var(--ink); }
+  .fact:last-child { border-bottom: 0; }
+}
+</style>
+</head>
+<body>
+  <main class="page">
+    <header>
+      <div class="brand">World Model Collapse</div>
+      <nav>
+        <a href="#setup">Setup</a>
+        <a href="#main">Main video</a>
+        <a href="#observations">Observations</a>
+        <a href="#appendix">Appendix</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <div class="eyebrow">Object-edited initial states · replay vs. policy-in-loop</div>
+      <h1>World Model Collapse on Out-of-Distribution Objects</h1>
+      <p class="lead">
+        We edit the first visual state of a recorded robot trajectory by replacing the manipulated object,
+        then ask Ctrl-World to roll out the future under either recorded actions or a VLA policy. The page
+        puts the two action sources side by side, with pickplace as the primary example.
+      </p>
+    </section>
+
+    <section class="facts" aria-label="Experiment facts">
+      <div class="fact"><b>Tasks</b><span>7 manipulation tasks</span></div>
+      <div class="fact"><b>Scenes</b><span>baseline + 3 edited objects per task</span></div>
+      <div class="fact"><b>Replay</b><span>recorded action chunks</span></div>
+      <div class="fact"><b>Policy</b><span>OpenPI policy in Ctrl-World</span></div>
+    </section>
+
+    <section id="setup">
+      <div class="section-title"><div class="dot"></div><h2>Experimental setup</h2></div>
+      <p class="note">
+        For each task, we keep the same starting trajectory identity and replace the object in the initial
+        three-view observation. The edited initial states were generated with GPT Codex's imagegen image
+        editing feature. The replay condition uses the original recorded action trajectory. The policy
+        condition gives the edited observation and an object-aware prompt to the VLA policy, then rolls out
+        the world model with policy-generated actions. Each video below has one shared reference row on top,
+        followed by the baseline rollout and three edited-object rollouts.
+      </p>
+      
+      <figure class="figure-card">
+        <div class="figure-head">
+          <h3>Pickplace edited initial states</h3>
+          <span>initial-frame edit overview</span>
+        </div>
+        <img src="object_replacement_previews_v1/pickplace/pickplace_overview.png" alt="Pickplace edited initial states">
+        <figcaption>The pickplace input intervention used for the main comparison: original initial observation plus three object replacements.</figcaption>
+      </figure>
+    
+    </section>
+
+    <section id="main">
+      <div class="section-title"><div class="dot"></div><h2>Main comparison: pickplace</h2></div>
+      <p class="note">
+        Pickplace is used as the main video because it makes the intervention easy to inspect: the object
+        identity changes while the plate, arm, and table context should remain stable if the model handles
+        edited initial states robustly.
+      </p>
+      
+    <div class="video-pair">
+      
+      <section class="video-card primary">
+        <div class="video-head">
+          <h3>Replay / pickplace</h3>
+          <span>H.264 / 4 fps</span>
+        </div>
+        <video controls preload="metadata" playsinline src="replay_object_replacement_preview_v1_20260611_full/task_montages/pickplace_0000_0.mp4"></video>
+      </section>
+    
+      
+      <section class="video-card primary">
+        <div class="video-head">
+          <h3>Policy in loop / pickplace</h3>
+          <span>H.264 / 4 fps</span>
+        </div>
+        <video controls preload="metadata" playsinline src="policy_object_replacement_preview_v1_20260611_full/task_montages/pickplace_0000_0.mp4"></video>
+      </section>
+    
+    </div>
+    
+    </section>
+
+    <section id="observations">
+      <div class="section-title"><div class="dot"></div><h2>Observed behavior</h2></div>
+      <div class="bullets">
+        <div class="bullet">
+          <b>Object edits can destabilize the world model</b>
+          Replacing the manipulated object in the initial observation often leads to blurry or structurally
+          inconsistent rollouts.
+        </div>
+        <div class="bullet">
+          <b>The failure appears in both replay and policy-in-loop</b>
+          Replay isolates the world model under recorded actions, while policy-in-loop tests the same edited
+          initial state with actions generated by the policy.
+        </div>
+        <div class="bullet">
+          <b>Stable cases need a data audit</b>
+          Some edits remain coherent, possibly because similar objects or interactions already exist in
+          Ctrl-World's training data.
+        </div>
+      </div>
+    </section>
+
+    <section id="appendix">
+      <div class="section-title"><div class="dot"></div><h2>Additional material</h2></div>
+      <p class="note">
+        The remaining tasks are shown after the main video as supporting material. They use the same layout
+        and should be read as qualitative stress tests rather than controlled causal measurements.
+      </p>
+      <div class="timeline">
+        
+        <section class="task-block" id="drawer">
+          <h3>Drawer</h3>
+          <div class="material-row">
+            
+      <figure class="figure-card compact">
+        <div class="figure-head">
+          <h3>Edited initial states</h3>
+          <span>initial-frame edit overview</span>
+        </div>
+        <img src="object_replacement_previews_v1/drawer/drawer_overview.png" alt="Edited initial states">
+        <figcaption>Drawer: baseline and three object replacements.</figcaption>
+      </figure>
+    
+            
+      <section class="video-card">
+        <div class="video-head">
+          <h3>Replay</h3>
+          <span>H.264 / 4 fps</span>
+        </div>
+        <video controls preload="metadata" playsinline src="replay_object_replacement_preview_v1_20260611_full/task_montages/drawer_0000_10.mp4"></video>
+      </section>
+    
+            
+      <section class="video-card">
+        <div class="video-head">
+          <h3>Policy in loop</h3>
+          <span>H.264 / 4 fps</span>
+        </div>
+        <video controls preload="metadata" playsinline src="policy_object_replacement_preview_v1_20260611_full/task_montages/drawer_0000_10.mp4"></video>
+      </section>
+    
+          </div>
+        </section>
+            
+        <section class="task-block" id="stack">
+          <h3>Stack</h3>
+          <div class="material-row">
+            
+      <figure class="figure-card compact">
+        <div class="figure-head">
+          <h3>Edited initial states</h3>
+          <span>initial-frame edit overview</span>
+        </div>
+        <img src="object_replacement_previews_v1/stack/stack_overview.png" alt="Edited initial states">
+        <figcaption>Stack: baseline and three object replacements.</figcaption>
+      </figure>
+    
+            
+      <section class="video-card">
+        <div class="video-head">
+          <h3>Replay</h3>
+          <span>H.264 / 4 fps</span>
+        </div>
+        <video controls preload="metadata" playsinline src="replay_object_replacement_preview_v1_20260611_full/task_montages/stack_0000_10.mp4"></video>
+      </section>
+    
+            
+      <section class="video-card">
+        <div class="video-head">
+          <h3>Policy in loop</h3>
+          <span>H.264 / 4 fps</span>
+        </div>
+        <video controls preload="metadata" playsinline src="policy_object_replacement_preview_v1_20260611_full/task_montages/stack_0000_10.mp4"></video>
+      </section>
+    
+          </div>
+        </section>
+            
+        <section class="task-block" id="towel_fold">
+          <h3>Towel fold</h3>
+          <div class="material-row">
+            
+      <figure class="figure-card compact">
+        <div class="figure-head">
+          <h3>Edited initial states</h3>
+          <span>initial-frame edit overview</span>
+        </div>
+        <img src="object_replacement_previews_v1/towel_fold/towel_fold_overview.png" alt="Edited initial states">
+        <figcaption>Towel fold: baseline and three object replacements.</figcaption>
+      </figure>
+    
+            
+      <section class="video-card">
+        <div class="video-head">
+          <h3>Replay</h3>
+          <span>H.264 / 4 fps</span>
+        </div>
+        <video controls preload="metadata" playsinline src="replay_object_replacement_preview_v1_20260611_full/task_montages/towel_fold_0000_0.mp4"></video>
+      </section>
+    
+            
+      <section class="video-card">
+        <div class="video-head">
+          <h3>Policy in loop</h3>
+          <span>H.264 / 4 fps</span>
+        </div>
+        <video controls preload="metadata" playsinline src="policy_object_replacement_preview_v1_20260611_full/task_montages/towel_fold_0000_0.mp4"></video>
+      </section>
+    
+          </div>
+        </section>
+            
+        <section class="task-block" id="wipe_table">
+          <h3>Wipe table</h3>
+          <div class="material-row">
+            
+      <figure class="figure-card compact">
+        <div class="figure-head">
+          <h3>Edited initial states</h3>
+          <span>initial-frame edit overview</span>
+        </div>
+        <img src="object_replacement_previews_v1/wipe_table/wipe_table_overview.png" alt="Edited initial states">
+        <figcaption>Wipe table: baseline and three object replacements.</figcaption>
+      </figure>
+    
+            
+      <section class="video-card">
+        <div class="video-head">
+          <h3>Replay</h3>
+          <span>H.264 / 4 fps</span>
+        </div>
+        <video controls preload="metadata" playsinline src="replay_object_replacement_preview_v1_20260611_full/task_montages/wipe_table_0001_0.mp4"></video>
+      </section>
+    
+            
+      <section class="video-card">
+        <div class="video-head">
+          <h3>Policy in loop</h3>
+          <span>H.264 / 4 fps</span>
+        </div>
+        <video controls preload="metadata" playsinline src="policy_object_replacement_preview_v1_20260611_full/task_montages/wipe_table_0001_0.mp4"></video>
+      </section>
+    
+          </div>
+        </section>
+            
+        <section class="task-block" id="tissue">
+          <h3>Tissue</h3>
+          <div class="material-row">
+            
+      <figure class="figure-card compact">
+        <div class="figure-head">
+          <h3>Edited initial states</h3>
+          <span>initial-frame edit overview</span>
+        </div>
+        <img src="object_replacement_previews_v1/tissue/tissue_overview.png" alt="Edited initial states">
+        <figcaption>Tissue: baseline and three object replacements.</figcaption>
+      </figure>
+    
+            
+      <section class="video-card">
+        <div class="video-head">
+          <h3>Replay</h3>
+          <span>H.264 / 4 fps</span>
+        </div>
+        <video controls preload="metadata" playsinline src="replay_object_replacement_preview_v1_20260611_full/task_montages/tissue_0001_0.mp4"></video>
+      </section>
+    
+            
+      <section class="video-card">
+        <div class="video-head">
+          <h3>Policy in loop</h3>
+          <span>H.264 / 4 fps</span>
+        </div>
+        <video controls preload="metadata" playsinline src="policy_object_replacement_preview_v1_20260611_full/task_montages/tissue_0001_0.mp4"></video>
+      </section>
+    
+          </div>
+        </section>
+            
+        <section class="task-block" id="close_laptop">
+          <h3>Close laptop</h3>
+          <div class="material-row">
+            
+      <figure class="figure-card compact">
+        <div class="figure-head">
+          <h3>Edited initial states</h3>
+          <span>initial-frame edit overview</span>
+        </div>
+        <img src="object_replacement_previews_v1/close_laptop/close_laptop_overview.png" alt="Edited initial states">
+        <figcaption>Close laptop: baseline and three object replacements.</figcaption>
+      </figure>
+    
+            
+      <section class="video-card">
+        <div class="video-head">
+          <h3>Replay</h3>
+          <span>H.264 / 4 fps</span>
+        </div>
+        <video controls preload="metadata" playsinline src="replay_object_replacement_preview_v1_20260611_full/task_montages/close_laptop_0000_0.mp4"></video>
+      </section>
+    
+            
+      <section class="video-card">
+        <div class="video-head">
+          <h3>Policy in loop</h3>
+          <span>H.264 / 4 fps</span>
+        </div>
+        <video controls preload="metadata" playsinline src="policy_object_replacement_preview_v1_20260611_full/task_montages/close_laptop_0000_0.mp4"></video>
+      </section>
+    
+          </div>
+        </section>
+            
+      </div>
+    </section>
+
+  </main>
+</body>
+</html>
