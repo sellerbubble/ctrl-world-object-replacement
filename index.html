@@ -134,6 +134,22 @@ h2 {
   gap: 18px;
   align-items: start;
 }
+.strip-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+.strip-card {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  padding: 12px;
+}
+.strip-card img {
+  display: block;
+  width: 100%;
+  border: 1px solid #000;
+  background: #fff;
+}
 .video-card {
   background: var(--paper);
   border: 1px solid var(--line);
@@ -246,6 +262,7 @@ video {
         <a href="#main">Main video</a>
         <a href="#observations">Observations</a>
         <a href="#first-view">First-view</a>
+        <a href="#frame-strips">Frame strips</a>
         <a href="#appendix">Appendix</a>
       </nav>
     </header>
@@ -406,6 +423,75 @@ video {
         <video controls preload="metadata" playsinline src="first_view_rollout_comparisons_v1/close_laptop_first_view_replay_policy.mp4"></video>
       </section>
     
+      </div>
+    </section>
+        
+
+    
+    <section id="frame-strips">
+      <div class="section-title"><div class="dot"></div><h2>First-view rollout frame strips</h2></div>
+      <p class="note">
+        These static figures sample frames from the first camera view only. Each column is one experiment
+        condition; time runs from top to bottom.
+      </p>
+      <div class="strip-grid">
+        
+        <section class="strip-card">
+          <div class="figure-head">
+            <h3>Pickplace</h3>
+            <span>first-view sampled frames</span>
+          </div>
+          <img src="first_view_rollout_frame_strips_v1/pickplace_first_view_frame_strip.png" alt="Pickplace first-view rollout frame strip">
+        </section>
+                
+        <section class="strip-card">
+          <div class="figure-head">
+            <h3>Drawer</h3>
+            <span>first-view sampled frames</span>
+          </div>
+          <img src="first_view_rollout_frame_strips_v1/drawer_first_view_frame_strip.png" alt="Drawer first-view rollout frame strip">
+        </section>
+                
+        <section class="strip-card">
+          <div class="figure-head">
+            <h3>Stack</h3>
+            <span>first-view sampled frames</span>
+          </div>
+          <img src="first_view_rollout_frame_strips_v1/stack_first_view_frame_strip.png" alt="Stack first-view rollout frame strip">
+        </section>
+                
+        <section class="strip-card">
+          <div class="figure-head">
+            <h3>Towel fold</h3>
+            <span>first-view sampled frames</span>
+          </div>
+          <img src="first_view_rollout_frame_strips_v1/towel_fold_first_view_frame_strip.png" alt="Towel fold first-view rollout frame strip">
+        </section>
+                
+        <section class="strip-card">
+          <div class="figure-head">
+            <h3>Wipe table</h3>
+            <span>first-view sampled frames</span>
+          </div>
+          <img src="first_view_rollout_frame_strips_v1/wipe_table_first_view_frame_strip.png" alt="Wipe table first-view rollout frame strip">
+        </section>
+                
+        <section class="strip-card">
+          <div class="figure-head">
+            <h3>Tissue</h3>
+            <span>first-view sampled frames</span>
+          </div>
+          <img src="first_view_rollout_frame_strips_v1/tissue_first_view_frame_strip.png" alt="Tissue first-view rollout frame strip">
+        </section>
+                
+        <section class="strip-card">
+          <div class="figure-head">
+            <h3>Close laptop</h3>
+            <span>first-view sampled frames</span>
+          </div>
+          <img src="first_view_rollout_frame_strips_v1/close_laptop_first_view_frame_strip.png" alt="Close laptop first-view rollout frame strip">
+        </section>
+                
       </div>
     </section>
         
